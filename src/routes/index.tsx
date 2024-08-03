@@ -9,7 +9,7 @@ export const Route = createFileRoute('/')({
 function HomePage() {
     return (
         <div className="w-full flex flex-col items-center justify-center text-center my-4 gap-y-4">
-            <div className="container space-y-4">
+            <div className="container space-y-4 px-4">
                 <div className="flex w-full items-center justify-center">
                     <img src={logo} className="w-48 h-48" />
                 </div>
