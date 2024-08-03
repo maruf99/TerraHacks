@@ -1,8 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { Bars3Icon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
 
 import logo from "../assets/logo-transparent.png";
+import SearchBox from "./SearchBox";
 
 const links = [
 	{
@@ -10,17 +10,64 @@ const links = [
 		link: "/",
 	},
 	{
-		label: "About",
-		link: "/about",
+		label: "Explore",
+		links: [
+			{ label: "By Region", link: "/explore/region" },
+			{ label: "By Endangerment Level", link: "/explore/level" },
+		],
 	},
 ];
 
 const mappedLinks = links.map((link) => {
 	return (
 		<li>
-			<Link key={link.label} to={link.link}>
-				{link.label}
-			</Link>
+			{"links" in link ? (
+				<details>
+					<summary>{link.label}</summary>
+					<ul className="p-2">
+						{link.links!.map((l) => {
+							return (
+								<li>
+									<Link key={l.label} to={l.link}>
+										{l.label}
+									</Link>
+								</li>
+							);
+						})}
+					</ul>
+				</details>
+			) : (
+				<Link key={link.label} to={link.link}>
+					{link.label}
+				</Link>
+			)}
+		</li>
+	);
+});
+
+const mappedLinksDisclosure = links.map((link) => {
+	return (
+		<li>
+			{"links" in link ? (
+				<>
+					<a key={link.label}>{link.label}</a>
+					<ul className="p-2">
+						{link.links!.map((l) => {
+							return (
+								<li>
+									<Link key={l.label} to={l.link}>
+										{l.label}
+									</Link>
+								</li>
+							);
+						})}
+					</ul>
+				</>
+			) : (
+				<Link key={link.label} to={link.link}>
+					{link.label}
+				</Link>
+			)}
 		</li>
 	);
 });
@@ -41,7 +88,7 @@ export default function Navbar() {
 						tabIndex={0}
 						className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
 					>
-						{mappedLinks}
+						{mappedLinksDisclosure}
 					</ul>
 				</div>
 				<div className="btn-square p-1">
@@ -56,7 +103,11 @@ export default function Navbar() {
 					{mappedLinks}
 				</ul>
 			</div>
-			<div className="navbar-end" />
+			<div className="navbar-end">
+				<div className="px-2">
+					<SearchBox />
+				</div>
+			</div>
 		</div>
 	);
 }

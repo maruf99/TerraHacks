@@ -19,7 +19,7 @@ function HomePage() {
 				<h2 className="text-lg font-semibold">
 					We're a website dedicated to bringing awareness to local endangered animal species. We hope that by providing accurate statistics and data, as well as resources to contribute to the conservation of these animals, we can help our users contribute to their conservation!
 
-                    Feel free to begin by searching for a species below, or look at our full list!
+                    Feel free to begin by searching for a species below, or explore different species through our extensive categories!
 				</h2>
                 <SearchBox />
 			</div>
