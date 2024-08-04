@@ -1,6 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import logo from "../assets/logo-transparent.png";
 import SearchBox from '../components/SearchBox';
+import FormBox from '../components/FormBox';
 
 export const Route = createFileRoute('/')({
   component: HomePage
@@ -23,7 +24,7 @@ function HomePage() {
 
                     Feel free to begin by searching for a species below, or explore different species through our extensive categories!
 				</h2>
-                <SearchBox/>
+                <FormBox/>
 			</div>
         </div>
     );

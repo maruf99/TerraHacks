@@ -3,7 +3,7 @@ import express from 'express';
 import fetch, { Response } from 'node-fetch';
 import formData from 'express-form-data';
 import os from 'os';
-import fs from 'fs';
+import { readFile } from 'fs/promises';
 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
@@ -21,7 +21,6 @@ const options = {
 };
 
 app.use(express.json());
-app.use(express.urlencoded());
 
 app.use(formData.parse(options));
 app.use(formData.format());
@@ -29,51 +28,58 @@ app.use(formData.stream());
 app.use(formData.union());
 
 app.post('/api/search', async (req, res) => {
-	const prompt = `Provide a list of many species that matches the description provided in the following input text, image, or both. Only output Amphibians, Reptiles, or Mammals. Only output Scientific name, do not include localised name or any other text. Ensure the animals are found in Canada. The user may provide further details about its location:\n\n${req.body.text?.length ? req.body.text : ''}`;
+    //console.log(req.query);
 
-    const { path } = req.body.image;
-    const ext = path?.split(' ')?.slice(-1)[0] ?? null;
+	const prompt = `Find the closest species that matches the following conditions. Even if it's too vague just give a result. Only output the scientific name of the animal. Never give a result more than three words. Query: ${req.body.text}`;
 
-    const arr: any[] = [prompt];
+    let prmpt: string[] | string = prompt;
+    if (req.body.image) {
 
-    if (ext) {
-        const image = {
-            inlineData: {
-                data: Buffer.from(fs.readFileSync(path)).toString('base64'),
-                mimeType: `image/${ext}`
-            }
-        };
-
-        arr.push(image);
+        const imageFile = (await readFile(req.body.image.path)).toString('base64');
+        prmpt = [prompt, imageFile]
     }
 
-    const result = await gemini.generateContent(arr);
-    console.log(result.response.text());
+    const result = await gemini.generateContent(prmpt);
+    const parsed = result.response.text().match(/\*(.+?)\*/g)[0]?.replaceAll('*', '');
+    
+    res.status(200).json({ name: parsed });
+});
 
-	/* const result = await fetch(NATURE_SERVE_URL('api/data/speciesSearch'), {
+app.listen(3000, () => {
+	console.log('App listening on port 3000');
+});
+
+/*
+const result = await fetch(NATURE_SERVE_URL('api/data/speciesSearch'), {
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
             criteriaType: "species",
-            textCriteria: query
+            textCriteria: [{ paramType: 'quickSearch', searchToken: req.query.query }]
         })
-    }) */
+    });
 
-	/* if (result.ok) {
+	if (result.ok) {
         const body = await result.json() as Record<string, any>;
+        console.log(body);
         if (body.results.length) {
             const { scientificName } = body.results[0];
 
             const [genus, species] = scientificName.split(" ");
 
+            console.log(IUCN_URL(`taxa/scientific_name?genus_name=${genus.trim()}&species_name=${species.trim()}`));
+
             const newResult = await fetch(IUCN_URL(`taxa/scientific_name?genus_name=${genus}&species_name=${species}`), {
                 headers: {
                     'Accept': 'application/json',
-                    'Authorization': config.icun_key as string
+                    'Authorization': config.iucn_key as string
                 }
             });
+
+            console.log(await newResult.json());
 
             if (!newResult.ok) return res.status(404).send('Not Found');
 
@@ -86,15 +92,15 @@ app.post('/api/search', async (req, res) => {
                 }
             });
 
+            console.log('test 3')
+
             if (!finalResult.ok) return res.status(404).send('Not Found');
 
             res.status(200).json(finalResult);
+
+            console.log('test2')
         }
     } else {
         res.status(404).send('Not Found');
-    } */
-});
-
-app.listen(3000, () => {
-	console.log('App listening on port 3000');
-});
+    }
+*/

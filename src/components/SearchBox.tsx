@@ -2,7 +2,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
 
-export default function SearchBox() {
+export default function SearchBox({ handleKey = true }: { handleKey?: boolean }) {
     const navigate = useNavigate();
 
     const [query, setQuery] = useState('');
@@ -15,14 +15,14 @@ export default function SearchBox() {
     const handleEnter = (e: React.KeyboardEvent<HTMLElement>) => {
         if (e.key === "Enter") {
             if (!query.length) return;
-            navigate({ to: `/search`, search: { q: encodeURIComponent(query) } });
+            navigate({ to: `/search`, search: { query } });
         }
     }
 
 	return (
 		<label className="input input-bordered flex items-center gap-2">
             <MagnifyingGlassIcon className="h-4 w-4 opacity-70"/>
-			<input name="query" type="text" className="grow" placeholder="Search" onChange={handleChange} onKeyUp={handleEnter}/>
+			<input name="query" type="text" className="grow" placeholder="Search" onChange={handleChange} onKeyUp={handleKey ? handleEnter : () => null}/>
 		</label>
 	);
 }
