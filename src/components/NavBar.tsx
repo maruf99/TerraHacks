@@ -16,6 +16,10 @@ const links = [
 			{ label: "By Endangerment Level", link: "/explore/level" },
 		],
 	},
+	{
+		label: "Get Involved",
+		link: "/get-involved"
+	},
 ];
 
 const mappedLinks = links.map((link) => {

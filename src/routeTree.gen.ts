@@ -12,12 +12,18 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SearchImport } from './routes/search'
+import { Route as GetInvolvedImport } from './routes/get-involved'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
 const SearchRoute = SearchImport.update({
   path: '/search',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const GetInvolvedRoute = GetInvolvedImport.update({
+  path: '/get-involved',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -37,6 +43,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/get-involved': {
+      id: '/get-involved'
+      path: '/get-involved'
+      fullPath: '/get-involved'
+      preLoaderRoute: typeof GetInvolvedImport
+      parentRoute: typeof rootRoute
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -49,7 +62,11 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({ IndexRoute, SearchRoute })
+export const routeTree = rootRoute.addChildren({
+  IndexRoute,
+  GetInvolvedRoute,
+  SearchRoute,
+})
 
 /* prettier-ignore-end */
 
@@ -60,11 +77,15 @@ export const routeTree = rootRoute.addChildren({ IndexRoute, SearchRoute })
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/get-involved",
         "/search"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/get-involved": {
+      "filePath": "get-involved.tsx"
     },
     "/search": {
       "filePath": "search.tsx"
