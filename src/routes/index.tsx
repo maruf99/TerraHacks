@@ -7,18 +7,7 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
-    const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
-
-        formData.append('image', e.currentTarget.image.files[0]);
-        formData.append('text', e.currentTarget.query.value);
-
-        await fetch('http://localhost:3000/api/search', {
-            method: 'POST',
-            body: formData
-        });
-    }
+    
 
     return (
         <div className="w-full flex flex-col items-center justify-center text-center my-4 gap-y-4">

@@ -15,7 +15,7 @@ export default function SearchBox() {
     const handleEnter = (e: React.KeyboardEvent<HTMLElement>) => {
         if (e.key === "Enter") {
             if (!query.length) return;
-            navigate({ to: `/search`, search: { q: query } });
+            navigate({ to: `/search`, search: { q: encodeURIComponent(query) } });
         }
     }
 
