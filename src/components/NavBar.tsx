@@ -105,7 +105,7 @@ export default function Navbar() {
 			</div>
 			<div className="navbar-end">
 				<div className="px-2">
-					<SearchBox />
+					<SearchBox/>
 				</div>
 			</div>
 		</div>
